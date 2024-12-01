@@ -1,11 +1,4 @@
-#include <cmath>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <sstream>
-#include <vector>
-#include <regex>
-#include <algorithm>
+#include<bits/stdc++.h>
 
 using namespace std;
 typedef long long ll;
