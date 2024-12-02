@@ -3,42 +3,8 @@
 using namespace std;
 typedef long long ll;
 
-bool isSafe(vector<ll> nums) {
-    ll a;
-    a = nums[0];
-    int increasing = 0;
-    bool invalid = false;
-    for (ll b : vector<ll>(nums.begin()+1, nums.end())) {
-        if (abs(a-b) < 1 || abs(a-b) > 3) {
-            invalid = true;
-            break;
-        } else {
-            if (increasing == 0) {
-                if (a-b > 0) {
-                    increasing = -1;
-                } else {
-                    increasing = 1;
-                }
-            } else if (increasing == 1) {
-                if (a-b > 0) {
-                    invalid = true;
-                    break;
-                }
-            } else if (increasing == -1) {
-                if (b-a > 0) {
-                    invalid = true;
-                    break;
-                }
-            }
-        }
-        a = b;
-    }
-}
-
 int main() {
     std::ifstream inputFile("input.txt");
-    
-
     string line;
     ll s = 0;
     while(getline(inputFile, line)) {
