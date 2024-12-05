@@ -2,16 +2,6 @@
 using namespace std;
 typedef long long ll;
 
-class Rule {
-    public:
-    ll p1;
-    ll p2;
-    Rule(ll p1_, ll p2_) {
-        p1 = p1_;
-        p2 = p2_;
-    }
-};
-
 int main() {
     ifstream inputFile("input.txt");
     ifstream ruleFile("rules.txt");
