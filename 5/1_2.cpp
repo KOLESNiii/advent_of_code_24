@@ -51,12 +51,7 @@ int main() {
     for (ll i = 0; i < grid.size(); ++i) {
         vector<ll> gridCopy = grid[i];
         sort(gridCopy.begin(), gridCopy.end(), comparison);
-        bool isSame = true;
-        for (ll j = 0; j < grid[i].size(); ++j) {
-            if (grid[i][j] != gridCopy[j]) {
-                isSame = false;
-            }
-        }
+        bool isSame = grid[i] == gridCopy;
         if (isSame) {
             s += gridCopy[gridCopy.size()/2];
         } else {
