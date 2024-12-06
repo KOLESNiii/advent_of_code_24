@@ -35,7 +35,6 @@ int main() {
         ++y;
     }
     maxY = y;
-    ll s = 0;
     vector<ll> curDir = {0, -1};
     set<vector<ll>> visited;
     while (curPos[0] < maxX && curPos[1] < maxY && curPos[0] >= 0 && curPos[1] >= 0) {
@@ -43,22 +42,15 @@ int main() {
         ll curY = curPos[1];
         ll dX = curDir[0];
         ll dY = curDir[1];
-        if (visited.count({curX, curY, dX, dY}) != 0) {
-            ++s;
-        }
-        //cout << curX << ", " << curY << endl;
         if (obstacles.count({curX + dX, curY + dY}) == 0) {
             curPos = {curX + dX, curY + dY};
             if (curPos[0] < maxX && curPos[1] < maxY && curPos[0] >= 0 && curPos[1] >= 0) {
-                visited.insert({curX, curY, dX, dY});
+                visited.insert(curPos);
             }
         } else {
             curDir = rotateRight(curDir);
         }
     }
-    /*for (auto it = visited.begin(); it != visited.end(); ++it) {
-        cout << (*it)[0] << ", " << (*it)[1] << endl;
-    }*/
     cout << visited.size() << endl;
     return 0;
 }
