@@ -2,65 +2,53 @@
 using namespace std;
 typedef long long ll;
 
-// Memoization map
-unordered_map<ll, vector<ll>> memo;
+pair<ll, ll> splitNumber(ll number) {
+    string numStr = to_string(number);
+    int mid = numStr.size() / 2;
+    ll left = stoll(numStr.substr(0, mid));
+    ll right = stoll(numStr.substr(mid));
+    return {left, right};
+}
 
-vector<ll> transform(ll nextStone) {
-    // Check if result is already computed
-    if (memo.find(nextStone) != memo.end()) {
-        return memo[nextStone];
+ll countStones(vector<ll> stones, int numIts) {
+    unordered_map<ll, ll> currentStones;
+    for (ll stone : stones) {
+        currentStones[stone] = 1;
     }
-
-    vector<ll> result;
-    if (nextStone == 0) {
-        result.push_back(1);
-    } else if (to_string(nextStone).size() % 2 == 0) {
-        int size = to_string(nextStone).size();
-        ll p = pow(10, size / 2);
-        ll left = nextStone / p;
-        ll right = nextStone % p;
-        result.push_back(left);
-        result.push_back(right);
-    } else {
-        result.push_back(nextStone * 2024);
+    for (int i = 0; i < numIts; ++i) {
+        unordered_map<ll, ll> nextStones;
+        for (auto [stone, n] : currentStones) {
+            if (stone == 0) {
+                nextStones[1] += n;
+            } else {
+                if (to_string(stone).size() % 2 == 0) {
+                    auto [left, right] = splitNumber(stone);
+                    nextStones[left] += n;
+                    nextStones[right] += n;
+                } else {
+                    nextStones[stone * 2024] += n;
+                }
+            }
+        }
+        currentStones = move(nextStones);
     }
-
-    // Save the result in memoization map
-    memo[nextStone] = result;
-    return result;
+    ll s = 0;
+    for (auto [stone, count] : currentStones) {
+        s += count;
+    }
+    return s;
 }
 
 int main() {
     ifstream inputFile("input.txt");
-    queue<ll> currentLevel;
     ll a;
-
-    // Read input into queue
+    vector<ll> initialStones;
     while (inputFile >> a) {
-        currentLevel.push(a);
+        initialStones.push_back(a);
     }
+    ll result1 = countStones(initialStones, 25);
+    ll result2 = countStones(initialStones, 75);
 
-    // Process 75 levels
-    for (int i = 0; i < 75; ++i) {
-        cout << "Level: " << i << endl;
-        queue<ll> nextLevel;
-
-        while (!currentLevel.empty()) {
-            ll nextStone = currentLevel.front();
-            currentLevel.pop();
-
-            // Transform and push results to the next level
-            vector<ll> results = transform(nextStone);
-            for (ll res : results) {
-                nextLevel.push(res);
-            }
-        }
-
-        // Swap queues for the next iteration
-        swap(currentLevel, nextLevel);
-    }
-
-    // Output the final size of the queue
-    cout << "Final queue size: " << currentLevel.size() << endl;
+    cout << "Part 1: " << result1 << "\nPart 2: " << result2 << endl;
     return 0;
 }
