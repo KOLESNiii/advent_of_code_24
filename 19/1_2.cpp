@@ -44,6 +44,7 @@ int main() {
     while (getline(inputFile, line)) {
         candidates.push_back(line);
     }
+    inputFile.close();
     ll one = 0;
     ll two = 0;
     unordered_map<string, bool> memo;
