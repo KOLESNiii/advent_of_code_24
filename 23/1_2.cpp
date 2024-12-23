@@ -4,44 +4,27 @@ typedef long long ll;
 
 unordered_map<string, set<string>> m;
 
-void largestFullyConnected(vector<string> &current, unordered_set<string> &potentialNodes, unordered_set<string> &excludedNodes, vector<string> &biggest) {
-    if (potentialNodes.empty() && excludedNodes.empty()) {
-        if (current.size() > biggest.size()) {
-            biggest = current;
+void findLargestClique(vector<string>& current, vector<string>& best, vector<string>& candidates, int depth = 0) {
+    if (candidates.empty()) {
+        if (current.size() > best.size()) {
+            best = current;
         }
         return;
     }
 
-    string pivot;
-    if (!potentialNodes.empty()) {
-        pivot = *potentialNodes.begin();
-    } else {
-        pivot = *excludedNodes.begin();
-    }
-
-    vector<string> nonNeighbors;
-    for (const string &node : potentialNodes) {
-        if (!m[pivot].count(node)) {
-            nonNeighbors.push_back(node);
-        }
-    }
-
-    for (const string &node : nonNeighbors) {
+    for (int i = 0; i < candidates.size(); ++i) {
+        string node = candidates[i];
         current.push_back(node);
-        unordered_set<string> newPotential;
-        unordered_set<string> newExcluded;
-        for (const string &nn : m[node]) {
-            if (potentialNodes.count(nn)) newPotential.insert(nn);
-            if (excludedNodes.count(nn)) newExcluded.insert(nn);
+        vector<string> nextCandidates;
+        for (int j = i + 1; j < candidates.size(); ++j) {
+            if (m[node].count(candidates[j])) {
+                nextCandidates.push_back(candidates[j]);
+            }
         }
-
-        largestFullyConnected(current, newPotential, newExcluded, biggest);
+        findLargestClique(current, best, nextCandidates, depth + 1);
         current.pop_back();
-        potentialNodes.erase(node);
-        excludedNodes.insert(node);
     }
 }
-
 
 int main() {
     ifstream inputFile("input.txt");
@@ -55,7 +38,6 @@ int main() {
             string b = match[2];
             unique.insert(a);
             unique.insert(b);
-            //cout << a << " to " << b << endl;
             if (!m.count(a)) {
                 m[a] = {b};
             } else {
@@ -88,9 +70,7 @@ int main() {
     }
     vector<string> currentClique, maxClique;
     vector<string> nodes(unique.begin(), unique.end());
-    unordered_set<string> excluded;
-    cout << nodes.size() << endl;
-    largestFullyConnected(currentClique, unique, excluded, maxClique);
+    findLargestClique(currentClique, maxClique, nodes);
     sort(maxClique.begin(), maxClique.end());
     sum /= 6;
     cout << "Part 1: " << sum << "\nPart 2: ";
